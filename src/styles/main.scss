@@ -1,0 +1,13 @@
+@use 'vuetify' with (
+  // variables go here
+  $font-weights: map-deep-merge(
+  (
+    'thin': 100,
+    'light': 300,
+    'regular': 400,
+    'medium': 600,
+    'bold': 700,
+    'black': 1000
+  )));
+
+

@@ -14,19 +14,25 @@
             v-model="carousel"
             reverse-transition="fade-transition"
             transition="fade-transition"
-            cycle=true,
-            interval=5000
+            interval=9000
+            cycle
+            height="1000"
           >
             <v-carousel-item v-for="(item,i) in filteredItems"
                             :key="i">
               <v-card>
-                <v-card-title>{{ item.caption }}</v-card-title><br>
+                <v-card-item padding="0" margin="0">
+                  <v-card-title>{{ item.caption }}</v-card-title>
+                  <v-card-text>{{ item.text }}</v-card-text>
 
-                <v-img :src=item.src :cover=false width="99%"></v-img><br>
-                <v-card-item max-height="70%" >
-                  <v-card-text vert>{{ item.text }}</v-card-text>
                 </v-card-item>
-
+                <v-img v-if="item.src.search(/.jpg|jpeg|png$/) > 0" :src=item.src :cover=false width="99%"></v-img>
+                <template v-if="item.src.endsWith('.mp4')">
+<!--                  TODO: make this not cycle if the video is playing?-->
+                  <video controls  height="540">
+                    <source :src="item.src" type="video/mp4" />
+                  </video>
+                </template>
               </v-card>
             </v-carousel-item>
         </v-carousel>
@@ -37,6 +43,7 @@
 </template>
 
 <script  lang="ts">
+
 export default {
   name: "Hypercarousel",
   data: () => ({
@@ -61,15 +68,35 @@ export default {
         text: "Rats of the sky. Vermin who foul our atmosphere.",
         category: "animal"
       },
+      {
+        src: "https://www.detritus.net/cine/TFW_NO_GF_2020.mp4",
+        caption: "TFWNOGF",
+        text: "this is a good documentary",
+        category: "cosmology"
+      }
     ],
   }),
   computed: {
     filteredItems() {
       return this.items.filter((e,self) => {
-        return !this.tag || e.category == this.tag
+        console.log(self);
+        return !this.tag || e.category == this.tag;
       });
     }
   },
+  // methods: {
+  //   // returns an object in the shape that VuetifyPlayer wants.
+  //   videoSource(src: string) {
+  //     return {
+  //       sources: [
+  //         {
+  //           src,
+  //           type: 'video.mp4',
+  //         }
+  //       ],
+  //     }
+  //   }
+  // },
   watch: {
     tag(value) {
       this.carousel = 0;
@@ -80,6 +107,8 @@ export default {
 
 
 <style scoped>
-
+  body {
+    background-color: #999999;
+  }
 
 </style>

@@ -1,5 +1,6 @@
-# base
+# Hypercarousel
 
+This component creates a Vuetify Carousel that is filterable via "tag" chips or facets on the left column.
 ## Project setup
 
 ```

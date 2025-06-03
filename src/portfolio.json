@@ -1,0 +1,26 @@
+[
+  {
+    "src": "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
+    "caption": "Red Squirrel",
+    "text": "A really cool little varmint that buries nuts.",
+    "category": "animal"
+  },
+  {
+    "src": "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
+    "caption": "Sky",
+    "text": "The ceiling of our world.",
+    "category": "cosmology"
+  },
+  {
+    "src": "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
+    "caption": "Bird",
+    "text": "Rats of the sky. Vermin who foul our atmosphere.",
+    "category": "animal"
+  },
+  {
+    "src": "https://www.detritus.net/cine/TFW_NO_GF_2020.mp4",
+    "caption": "TFWNOGF",
+    "text": "this is a good documentary",
+    "category": "cosmology"
+  }
+]

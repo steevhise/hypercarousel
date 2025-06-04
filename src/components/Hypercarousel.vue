@@ -1,15 +1,14 @@
 <template >
   <v-container>
     <v-row >
-      <v-col cols="2">
+      <v-col cols="3">
         <v-chip-group :multiple="false"  direction="vertical" v-model="tag">
-          <v-chip value='animal' color="red">animals</v-chip>
-          <v-chip value='cosmology' color="green">cosmology</v-chip>
-          <v-chip value = 'plant' color="orange">plants</v-chip>
+          <v-chip v-for="(t,i) in tags" :value=t
+                  :key="i">{{t}}</v-chip>
         </v-chip-group>
         <h1>{{tag}}</h1>
       </v-col>
-      <v-col cols="10">
+      <v-col cols="9">
         <v-carousel :hide-delimiters="true"
             v-model="carousel"
             reverse-transition="fade-transition"
@@ -78,20 +77,15 @@ export default {
     ],
   }),
   computed: {
+    tags() { return [... new Set(this.items.map((i: object) => i.category))]},
     filteredItems() {
       return this.items.filter((e,self) => {
-        console.debug(self);
         return !this.tag || e.category == this.tag;
       });
     },
     vidVisible(id: string) {
       const el = document.getElementById(id);
-      if(!el) {
-        return false;
-      }
-      console.log(el);
-      return true;
-
+      return !!el;
     }
   },
   methods: {
@@ -120,7 +114,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
  video {

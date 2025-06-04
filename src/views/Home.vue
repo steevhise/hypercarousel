@@ -1,5 +1,5 @@
 <template>
-  <Hypercarousel />
+  <Hypercarousel url="src/portfolio.json" />
 </template>
 
 <script>

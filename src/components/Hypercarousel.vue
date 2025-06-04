@@ -43,38 +43,19 @@
 </template>
 
 <script  lang="ts">
+import axios from 'axios';
 
 export default {
   name: "Hypercarousel",
+  props: [
+    'url'
+  ],
   data: () => ({
     tag: undefined,
+    error: undefined,
+    isLoading: false,
     carousel: 0,
-    items: [
-      {
-        src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
-        caption: "Red Squirrel",
-        text: "A really cool little varmint that buries nuts.",
-        category: "animal"
-      },
-      {
-        src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
-        caption: "Sky",
-        text: "The ceiling of our world.",
-        category: "cosmology"
-      },
-      {
-        src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
-        caption: "Bird",
-        text: "Rats of the sky. Vermin who foul our atmosphere.",
-        category: "animal"
-      },
-      {
-        src: "https://www.detritus.net/cine/TFW_NO_GF_2020.mp4",
-        caption: "TFWNOGF",
-        text: "this is a good documentary",
-        category: "cosmology"
-      }
-    ],
+    items: []
   }),
   computed: {
     tags() { return [... new Set(this.items.map((i: object) => i.category))]},
@@ -87,6 +68,9 @@ export default {
       const el = document.getElementById(id);
       return !!el;
     }
+  },
+  mounted() {
+    this.fetchData();
   },
   methods: {
     videoOff(item: any) {   // just turn off any video that's playing.
@@ -102,7 +86,18 @@ export default {
 
         })
       }
-    }
+    },
+    async fetchData() {
+      this.isLoading = true;  // Set loading to true
+      try {
+        const response = await axios.get(this.url);
+        this.items = response.data;  // Store the fetched data
+      } catch (error: any) {
+        this.error = error.message;   // Set error message if fetching fails
+      } finally {
+        this.isLoading = false;  // Set loading to false
+      }
+    },
   },
   watch: {
     tag() {

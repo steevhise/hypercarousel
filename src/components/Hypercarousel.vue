@@ -1,12 +1,13 @@
 <template >
   <v-container>
+    {{error}}
     <v-row >
       <v-col cols="3">
         <v-chip-group :multiple="false"  direction="vertical" v-model="tag">
           <v-chip v-for="(t,i) in tags" :value=t
                   :key="i">{{t}}</v-chip>
         </v-chip-group>
-        <h1>{{tag}}</h1>
+        <h6>{{tag}}</h6>
       </v-col>
       <v-col cols="9">
         <v-carousel :hide-delimiters="true"
@@ -27,7 +28,6 @@
                 </v-card-item>
                 <v-img v-if="item.src.search(/.jpg|jpeg|png$/) > 0" :src=item.src :cover=false width="99%"></v-img>
                 <template v-if="item.src.endsWith('.mp4')" >
-<!--                  TODO: make this not cycle if the video is playing?-->
                   <video :id="`video${i}`" controls height="540"  preload="auto" >
                     <source :src="item.src" type="video/mp4" />
                   </video>
@@ -35,8 +35,6 @@
               </v-card>
             </v-carousel-item>
         </v-carousel>
-<!--        cycle? {{ interval }} {{ !!cycle }}-->
-
       </v-col>
     </v-row>
   </v-container>
@@ -44,6 +42,18 @@
 
 <script  lang="ts">
 import axios from 'axios';
+
+// TODO: i know i'm not doing this type stuff right.
+type CarouselItem = {
+  caption: string;
+  text: string;
+  src: string;
+  category: string;
+}
+
+type FetchResponseType = {
+  data: CarouselItem[];     // an array of items.
+}
 
 export default {
   name: "Hypercarousel",
@@ -58,30 +68,27 @@ export default {
     items: []
   }),
   computed: {
-    tags() { return [... new Set(this.items.map((i: object) => i.category))]},
+    tags() { return [... new Set(this.items.map((i: any) => i.category))]},
     filteredItems() {
-      return this.items.filter((e,self) => {
+      return this.items.filter((e: any, self) => {    // self is needed just so "this" is preserved.
         return !this.tag || e.category == this.tag;
       });
     },
-    vidVisible(id: string) {
-      const el = document.getElementById(id);
-      return !!el;
-    }
+
   },
   mounted() {
     this.fetchData();
   },
   methods: {
-    videoOff(item: any) {   // just turn off any video that's playing.
-      const id = 'video' + item;
+    videoOff() {   // just turn off any video that's playing.
+      // const id = 'video' + item;
       const videos: HTMLCollection = document.getElementsByTagName('video');
-      console.log(videos);
+      // console.log(videos);
       if(videos.length > 0) {
         const vidArray = Array.from(videos);
         vidArray.map( (video: any) => {
-          console.log(video);
-          console.log('playing! ', video.id, '  - pausing');
+          console.debug(video);
+          console.debug('playing! ', video.id, '  - pausing');
           video.pause();    // will this really work?
 
         })
@@ -89,10 +96,20 @@ export default {
     },
     async fetchData() {
       this.isLoading = true;  // Set loading to true
+      // url has to be relative if dev mode, absolute if production
+      let fetchUrl: string = this.url;
+      if(process.env.NODE_ENV === 'development') {
+        fetchUrl = 'xportfolio.json'
+      }
+      console.debug('fetching from', fetchUrl);
       try {
-        const response = await axios.get(this.url);
-        this.items = response.data;  // Store the fetched data
+        const { data } = await axios.get(fetchUrl);   // TODO: look at if the data is an array
+        if(!(data && Array.isArray(data) && typeof data[0] === 'object' )) {
+          throw Error(`Error: data fetched from ${fetchUrl} is wrong shape`)
+        }
+        this.items = data;  // Store the fetched data
       } catch (error: any) {
+        console.log(error);
         this.error = error.message;   // Set error message if fetching fails
       } finally {
         this.isLoading = false;  // Set loading to false
@@ -104,7 +121,7 @@ export default {
       this.carousel = 0;
     },
     carousel() {
-      this.videoOff(this.carousel);
+      this.videoOff();
     }
   }
 };

@@ -1,9 +1,10 @@
 <template>
   <v-main>
-    <router-view />
+    <Hypercarousel url="src/portfolio.json" />
   </v-main>
 </template>
 
 <script lang="ts" setup>
   //
+
 </script>

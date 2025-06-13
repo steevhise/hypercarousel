@@ -3,7 +3,7 @@
     "src": "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
     "caption": "Red Squirrel",
     "text": "A really cool little varmint that buries nuts.",
-    "category": "animal"
+    "categoxry": 1
   },
   {
     "src": "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
